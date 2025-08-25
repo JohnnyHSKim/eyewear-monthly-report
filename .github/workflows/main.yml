@@ -33,6 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: .
 
       - name: Run script (fetch & email)
         run: node scripts/send-report.js
