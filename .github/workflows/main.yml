@@ -18,6 +18,19 @@ jobs:
         with:
           node-version: 20
 
+      - name: Debug - where am I?
+        run: |
+          pwd
+          git rev-parse --abbrev-ref HEAD
+          git rev-parse HEAD
+
+      - name: Debug - list files
+        run: |
+          ls -la
+          echo "-----"
+          if [ -f package.json ]; then cat package.json; else echo "package.json NOT FOUND"; fi
+
+
       - name: Install dependencies
         run: npm install
 
