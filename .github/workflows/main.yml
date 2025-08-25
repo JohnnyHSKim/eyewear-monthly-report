@@ -2,38 +2,38 @@ name: Eyewear Monthly Report
 
 on:
   schedule:
-    - cron: '30 0 1 * *'   # 매월 1일 09:30 KST (0:30 UTC)
-  workflow_dispatch:        # 수동 실행 허용
+    - cron: '30 0 1 * *'   # KST 09:30
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (main, full history)
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Debug - show workspace & files
+        run: |
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "Current dir:"
+          pwd
+          echo "List root:"
+          ls -la
+          echo "List .github/workflows:"
+          ls -la .github/workflows || true
+          echo "Show package.json (must exist below):"
+          if [ -f package.json ]; then cat package.json; else echo "package.json NOT FOUND"; exit 1; fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Debug - where am I?
-        run: |
-          pwd
-          git rev-parse --abbrev-ref HEAD
-          git rev-parse HEAD
-
-      - name: Debug - list files
-        run: |
-          ls -la
-          echo "-----"
-          if [ -f package.json ]; then cat package.json; else echo "package.json NOT FOUND"; fi
-
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm install
-        working-directory: .
+        run: npm ci || npm install
 
       - name: Run script (fetch & email)
         run: node scripts/send-report.js
@@ -42,5 +42,5 @@ jobs:
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO:  ${{ secrets.EMAIL_TO }}
+          EMAIL_FROM:${{ secrets.EMAIL_FROM }}
