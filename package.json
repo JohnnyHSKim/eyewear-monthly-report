@@ -4,6 +4,10 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "nodemailer": "^6.9.13"
+    "luxon": "^3.5.0",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.13",
+    "rss-parser": "^3.13.0",
+    "html-to-text": "^9.0.5"
   }
 }
