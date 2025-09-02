@@ -17,22 +17,20 @@ const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, EMAIL_TO } = pro
 // ── 전월(YYYY-MM) 계산 (KST) ──────────────────────────────────────────────────
 const KST = 'Asia/Seoul';
 const prevMonth = DateTime.now().setZone(KST).minus({ months: 1 });
-const ym = prevMonth.toFormat('yyyy-MM');
+const ym = prevMonth.toFormat('yyyy년 M월');
 
-// ── 요약 대상 매거진 리스트(고정 세트 + 확장 세트) ────────────────────────────
-const magazines = [
-  'Vision Monday',                   // US
-  'Eyestylist', 'Eyebook', 'Spectr Magazine', 'TEF (The Eyewear Forum)', // EU
-  'Eyewear Biz', 'Senken Shimbun', 'iOFT/Japan Eyewear Awards',          // Japan
-  'V.MAGAZINE (HK)', 'HKTDC/HK Optical Fair',                             // HK/TW
-  'GQ', 'Vogue'                                                           // Fashion
-];
+// ── 새 챗에 미리 채워둘 지시문(엄격 버전) ─────────────────────────────────────
+const basePrompt = `지난달(${ym})에 발행된 
+Vision Monday, Eyestylist, Eyebook, Spectr Magazine, The Eyewear Forum, 
+Eyewear Biz, Senken Shimbun, iOFT/Japan Eyewear Awards, V.MAGAZINE (HK), 
+HKTDC/HK Optical Fair, GQ, Vogue 
+각 매체의 모든 기사 중에서 아이웨어(eyewear, glasses, optical) 관련 내용을 
+트렌드 / 신제품 출시 / 신생 브랜드 보도 중심으로 정리해줘. 
 
-// ── 새 챗에 미리 채워둘 지시문(간결형) ─────────────────────────────────────────
-const basePrompt =
-  `아이웨어 월간 리포트 생성: 지난달(${ym}) ${magazines.join(', ')}에서 ` +
-  `트렌드 / 신제품 / 신생 브랜드 관련 보도를 매거진별 bullet(한국어 요약) + 원문 링크로 정리해줘. ` +
-  `사실 위주로, 군더더기 없이.`;
+조건:
+1) 매거진별로 bullet 요약 (한국어) 
+2) 원문 링크 포함 
+3) 한 매체도 누락하지 말고, 기사 없는 경우 '해당 월 기사 없음'으로 표기`;
 
 // ChatGPT 새 챗 시작 URL에 프롬프트 포함 (URL 인코딩)
 const chatUrl = `https://chat.openai.com/?q=${encodeURIComponent(basePrompt)}`;
@@ -67,7 +65,7 @@ const html = `
     <summary style="cursor:pointer;color:#555">요약 대상 매거진 보기</summary>
     <ul style="margin:8px 0 0 16px">
       <li>US: Vision Monday</li>
-      <li>EU: Eyestylist, Eyebook, Spectr Magazine, TEF</li>
+      <li>EU: Eyestylist, Eyebook, Spectr Magazine, The Eyewear Forum</li>
       <li>Japan: Eyewear Biz, Senken Shimbun, iOFT/Japan Eyewear Awards</li>
       <li>HK/TW: V.MAGAZINE, HKTDC/HK Optical Fair</li>
       <li>Fashion: GQ, Vogue</li>
@@ -83,7 +81,7 @@ const text = [
   helperText,
   chatUrl,
   '',
-  '대상: Vision Monday / Eyestylist / Eyebook / Spectr / TEF / Eyewear Biz / Senken / iOFT / V.MAGAZINE / HKTDC / GQ / Vogue',
+  '대상: Vision Monday / Eyestylist / Eyebook / Spectr / The Eyewear Forum / Eyewear Biz / Senken / iOFT / V.MAGAZINE / HKTDC / GQ / Vogue',
   '— 자동 알림 메일'
 ].join('\n');
 
