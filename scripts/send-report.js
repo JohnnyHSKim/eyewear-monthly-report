@@ -3,9 +3,12 @@ import { prevMonthRange, classifyItems, buildEmail, enrichSummaries } from './ma
 import { collectFromRSS } from './rss_collect.js';
 import { collectFromSearch } from './search_collect.js';
 
-const need = ['SMTP_HOST','SMTP_PORT','SMTP_USER','SMTP_PASS','EMAIL_FROM','EMAIL_TO'];
+const need = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'EMAIL_FROM', 'EMAIL_TO'];
 for (const k of need) {
-  if (!process.env[k]) { console.error(`[ERROR] Missing env: ${k}`); process.exit(1); }
+  if (!process.env[k]) {
+    console.error(`[ERROR] Missing env: ${k}`);
+    process.exit(1);
+  }
 }
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, EMAIL_TO } = process.env;
@@ -38,12 +41,12 @@ const transporter = nodemailer.createTransport({
     // DEBUG: 매체별 수집 건수 출력
     let total = 0;
     for (const [mag, arr] of Object.entries(combined)) {
-    const n = (arr || []).length;
-    console.log(`[DEBUG] collected ${mag}: ${n}`);
-    total += n;
+      const n = (arr || []).length;
+      console.log(`[DEBUG] collected ${mag}: ${n}`);
+      total += n;
     }
     console.log(`[DEBUG] total items: ${total}`);
-    
+
     // 4) 분류 → 요약 붙이기 → 본문 생성
     const buckets = classifyItems(combined);
     await enrichSummaries(buckets);   // 기사별 1~2문장 요약
