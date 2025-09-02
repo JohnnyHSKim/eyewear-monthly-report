@@ -58,6 +58,8 @@ export async function collectFromRSS(start, end) {
   return out;
 }
 
+console.log(`[DEBUG] raw item: ${it.title} (${pub?.toISO()})`);
+
 function parseDate(item) {
   const candidates = [item.isoDate, item.pubDate, item.published, item.updated];
   for (const c of candidates) {
