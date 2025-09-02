@@ -1,49 +1,27 @@
-name: Eyewear Monthly Report
+name: Eyewear Monthly Alarm
 
 on:
   schedule:
-    - cron: '30 0 1 * *'   # KST 09:30
+    - cron: '30 0 1 * *'   # 매월 1일 09:30 KST (UTC 00:30)
   workflow_dispatch:
 
 jobs:
-  build:
+  alarm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Debug - show workspace & files
-        run: |
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          pwd
-          ls -la
-          echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
-          echo "Commit: $(git rev-parse HEAD)"
-          echo "-----"
-          if [ -f package.json ]; then echo "package.json found"; else echo "package.json NOT FOUND"; exit 1; fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
 
-      - name: Debug - list files
-        run: |
-          pwd
-          ls -la
-          echo "---- scripts ----"
-          ls -la scripts || true
-          echo "---- head of send-report.js ----"
-          sed -n '1,40p' scripts/send-report.js || true
-
-
-      - name: Run script (fetch & email)
+      - name: Send alarm email
+        run: node scripts/send-report.js
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -51,7 +29,3 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           EMAIL_TO:  ${{ secrets.EMAIL_TO }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
-          GOOGLE_CSE_KEY: ${{ secrets.GOOGLE_CSE_KEY }}
-          GOOGLE_CSE_CX: ${{ secrets.GOOGLE_CSE_CX }}
-        run: node scripts/send-report.js
