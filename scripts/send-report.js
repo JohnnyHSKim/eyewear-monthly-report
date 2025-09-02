@@ -25,24 +25,22 @@ const transporter = nodemailer.createTransport({
     // 1) 전월 기간(KST)
     const { start, end } = prevMonthRange();
 
-    // 2) RSS 수집
+    // 2) 수집 (RSS → 부족분 검색 보강)
     const rssData = await collectFromRSS(start, end);
-
-    // 3) 검색 Fallback (RSS 부족한 매체만)
     const searchData = await collectFromSearch(start, end, rssData);
 
-    // 4) 합치기
+    // 3) 합치기
     const combined = { ...rssData };
     for (const [mag, arr] of Object.entries(searchData)) {
       combined[mag] = (combined[mag] || []).concat(arr);
     }
 
-    // 5) 분류 → 본문 생성
+    // 4) 분류 → 요약 붙이기 → 본문 생성
     const buckets = classifyItems(combined);
-    await enrichSummaries(buckets);
+    await enrichSummaries(buckets);   // 기사별 1~2문장 요약
     const { subject, html, text } = buildEmail(buckets, start, end);
 
-    // 6) 발송
+    // 5) 발송
     const info = await transporter.sendMail({
       from: EMAIL_FROM,
       to: EMAIL_TO,
