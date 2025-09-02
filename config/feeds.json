@@ -1,10 +1,9 @@
 {
   "Vision Monday": [
-    "https://www.visionmonday.com/style/frame-collections/",
-    "https://www.visionmonday.com/style/sunwear-collections/",
-    "https://www.visionmonday.com/style/brands-and-designers/",
-    "https://www.visionmonday.com/style/high-visibility/",
-    "https://www.visionmonday.com/style/style.pages/"
-    
+    "https://www.visionmonday.com/rss/style/frame-collections/",
+    "https://www.visionmonday.com/rss/style/sunwear-collections/",
+    "https://www.visionmonday.com/rss/style/brands-and-designers/",
+    "https://www.visionmonday.com/rss/style/high-visibility/",
+    "https://www.visionmonday.com/rss/style/style.pages/"
   ]
 }
