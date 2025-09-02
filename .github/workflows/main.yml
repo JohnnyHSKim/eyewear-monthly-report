@@ -3,11 +3,12 @@ name: Eyewear Monthly Alarm
 on:
   schedule:
     - cron: '30 0 1 * *'   # 매월 1일 09:30 KST (UTC 00:30)
-  workflow_dispatch:
+  workflow_dispatch:        # 수동 실행도 가능하게
 
 jobs:
   alarm:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
