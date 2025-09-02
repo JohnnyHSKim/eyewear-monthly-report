@@ -35,6 +35,15 @@ const transporter = nodemailer.createTransport({
       combined[mag] = (combined[mag] || []).concat(arr);
     }
 
+    // DEBUG: 매체별 수집 건수 출력
+    let total = 0;
+    for (const [mag, arr] of Object.entries(combined)) {
+    const n = (arr || []).length;
+    console.log(`[DEBUG] collected ${mag}: ${n}`);
+    total += n;
+    }
+    console.log(`[DEBUG] total items: ${total}`);
+    
     // 4) 분류 → 요약 붙이기 → 본문 생성
     const buckets = classifyItems(combined);
     await enrichSummaries(buckets);   // 기사별 1~2문장 요약
