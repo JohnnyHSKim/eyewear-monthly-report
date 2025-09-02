@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { prevMonthRange, classifyItems, buildEmail } from './make_report.js';
+import { prevMonthRange, classifyItems, buildEmail, enrichSummaries } from './make_report.js';
 import { collectFromRSS } from './rss_collect.js';
 import { collectFromSearch } from './search_collect.js';
 
@@ -39,6 +39,7 @@ const transporter = nodemailer.createTransport({
 
     // 5) 분류 → 본문 생성
     const buckets = classifyItems(combined);
+    await enrichSummaries(buckets);
     const { subject, html, text } = buildEmail(buckets, start, end);
 
     // 6) 발송
