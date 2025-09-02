@@ -32,7 +32,7 @@ export async function collectFromRSS(start, end) {
         const feed = await parser.parseURL(url);
         for (const it of feed.items || []) {
           const pub = parseDate(it);
-          if (!pub || pub < start || pub > end) continue;
+          if (!pub || pub < start.minus({ days: 2 }) || pub > end.plus({ days: 2 })) continue;
 
           const title = (it.title || '').trim();
           const link = (it.link || '').trim();
